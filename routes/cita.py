@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from config.conexionDB import get_conexion
 
 router = APIRouter()
-
+print("Router de citas creado")
 
 class Cita(BaseModel):
     fecha_hora: datetime
