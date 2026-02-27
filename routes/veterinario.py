@@ -8,8 +8,8 @@ router = APIRouter()
 
 class Veterinario(BaseModel):
     licencia: str
-    especialidad: str | None = None
-    activo: bool = True
+    especialidad: str 
+    activo: bool
     persona_id: int
 
 
