@@ -66,32 +66,35 @@ async def obtener_mascota(id_mascota: int, conn=Depends(get_conexion)):
 async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO mascota (
-            nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
+            id, nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
             alergias, antecedentes, activo, dueno_persona_id
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        mascota.nombre,
-        mascota.especie,
-        mascota.raza,
-        mascota.edad,
-        mascota.sexo,
-        mascota.peso,
-        mascota.talla,
-        mascota.grupo_sanguineo,
-        mascota.alergias,
-        mascota.antecedentes,
-        mascota.activo,
-        mascota.dueno_persona_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1003)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM mascota")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                mascota.nombre,
+                mascota.especie,
+                mascota.raza,
+                mascota.edad,
+                mascota.sexo,
+                mascota.peso,
+                mascota.talla,
+                mascota.grupo_sanguineo,
+                mascota.alergias,
+                mascota.antecedentes,
+                mascota.activo,
+                mascota.dueno_persona_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Mascota registrada exitosamente", "id": nuevo["id"]}
+            return {"mensaje": "Mascota registrada exitosamente"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar mascota: {e}")

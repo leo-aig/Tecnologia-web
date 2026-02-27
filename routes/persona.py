@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException
 
 from config.conexionDB import get_conexion
@@ -56,25 +56,28 @@ async def obtener_persona(id_persona: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_persona(persona: Persona, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO persona (nombres, apellidos, ci, telefono, email, direccion, activo)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
+        INSERT INTO persona (id, nombres, apellidos, ci, telefono, email, direccion, activo)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        persona.nombres,
-        persona.apellidos,
-        persona.ci,
-        persona.telefono,
-        persona.email,
-        persona.direccion,
-        persona.activo,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1001)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM persona")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                persona.nombres,
+                persona.apellidos,
+                persona.ci,
+                persona.telefono,
+                persona.email,
+                persona.direccion,
+                persona.activo,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Persona registrada exitosamente", "id": nuevo["id"]}
+            return {"mensaje": "Persona registrada exitosamente"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar persona: {e}")

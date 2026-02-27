@@ -57,24 +57,27 @@ async def obtener_tratamiento(id_tratamiento: int, conn=Depends(get_conexion)):
 async def insertar_tratamiento(tratamiento: Tratamiento, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO tratamiento
-        (nombre, estado, fecha_inicio, fecha_fin, objetivo, historial_id)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        RETURNING id
+        (id, nombre, estado, fecha_inicio, fecha_fin, objetivo, historial_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        tratamiento.nombre,
-        tratamiento.estado,
-        tratamiento.fecha_inicio,
-        tratamiento.fecha_fin,
-        tratamiento.objetivo,
-        tratamiento.historial_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1007)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM tratamiento")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                tratamiento.nombre,
+                tratamiento.estado,
+                tratamiento.fecha_inicio,
+                tratamiento.fecha_fin,
+                tratamiento.objetivo,
+                tratamiento.historial_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Tratamiento registrado", "id": nuevo["id"]}
+            return {"mensaje": "Tratamiento registrado"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar tratamiento: {e}")

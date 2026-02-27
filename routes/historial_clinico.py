@@ -60,25 +60,28 @@ async def obtener_historial(id_historial: int, conn=Depends(get_conexion)):
 async def insertar_historial(historial: HistorialClinico, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO historial_clinico
-        (fecha, sintomas, diagnostico, observaciones, mascota_id, veterinario_id, cita_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
+        (id, fecha, sintomas, diagnostico, observaciones, mascota_id, veterinario_id, cita_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        historial.fecha,
-        historial.sintomas,
-        historial.diagnostico,
-        historial.observaciones,
-        historial.mascota_id,
-        historial.veterinario_id,
-        historial.cita_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1006)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM historial_clinico")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                historial.fecha,
+                historial.sintomas,
+                historial.diagnostico,
+                historial.observaciones,
+                historial.mascota_id,
+                historial.veterinario_id,
+                historial.cita_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Historial clínico registrado", "id": nuevo["id"]}
+            return {"mensaje": "Historial clínico registrado"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar historial: {e}")

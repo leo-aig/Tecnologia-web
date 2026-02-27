@@ -58,25 +58,28 @@ async def obtener_cita(id_cita: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_cita(cita: Cita, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO cita (fecha_hora, motivo, prioridad, estado, observaciones, mascota_id, veterinario_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
+        INSERT INTO cita (id, fecha_hora, motivo, prioridad, estado, observaciones, mascota_id, veterinario_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        cita.fecha_hora,
-        cita.motivo,
-        cita.prioridad,
-        cita.estado,
-        cita.observaciones,
-        cita.mascota_id,
-        cita.veterinario_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1002)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM cita")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                cita.fecha_hora,
+                cita.motivo,
+                cita.prioridad,
+                cita.estado,
+                cita.observaciones,
+                cita.mascota_id,
+                cita.veterinario_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Cita registrada exitosamente", "id": nuevo["id"]}
+            return {"mensaje": "Cita registrada exitosamente"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar cita: {e}")

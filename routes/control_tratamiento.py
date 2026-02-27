@@ -55,22 +55,25 @@ async def obtener_control(id_control: int, conn=Depends(get_conexion)):
 async def insertar_control(control: ControlTratamiento, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO control_tratamiento
-        (fecha_control, estado, observaciones, tratamiento_id)
-        VALUES (%s, %s, %s, %s)
-        RETURNING id
+        (id, fecha_control, estado, observaciones, tratamiento_id)
+        VALUES (%s, %s, %s, %s, %s)
     """
-    parametros = (
-        control.fecha_control,
-        control.estado,
-        control.observaciones,
-        control.tratamiento_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1008)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM control_tratamiento")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                control.fecha_control,
+                control.estado,
+                control.observaciones,
+                control.tratamiento_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Control registrado", "id": nuevo["id"]}
+            return {"mensaje": "Control registrado"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar control: {e}")

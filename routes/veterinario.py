@@ -53,22 +53,25 @@ async def obtener_veterinario(id_veterinario: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_veterinario(veterinario: Veterinario, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO veterinario (licencia, especialidad, activo, persona_id)
-        VALUES (%s, %s, %s, %s)
-        RETURNING id
+        INSERT INTO veterinario (id, licencia, especialidad, activo, persona_id)
+        VALUES (%s, %s, %s, %s, %s)
     """
-    parametros = (
-        veterinario.licencia,
-        veterinario.especialidad,
-        veterinario.activo,
-        veterinario.persona_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1005)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM veterinario")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                veterinario.licencia,
+                veterinario.especialidad,
+                veterinario.activo,
+                veterinario.persona_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Veterinario registrado exitosamente", "id": nuevo["id"]}
+            return {"mensaje": "Veterinario registrado exitosamente"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar veterinario: {e}")

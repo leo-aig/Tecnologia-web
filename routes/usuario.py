@@ -54,23 +54,26 @@ async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO usuario (username, password_hash, rol, activo, persona_id)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING id
+        INSERT INTO usuario (id, username, password_hash, rol, activo, persona_id)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
-    parametros = (
-        usuario.username,
-        usuario.password_hash,
-        usuario.rol,
-        usuario.activo,
-        usuario.persona_id,
-    )
     try:
         async with conn.cursor() as cursor:
+            await cursor.execute("SELECT pg_advisory_xact_lock(1004)")
+            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM usuario")
+            fila = await cursor.fetchone()
+            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            parametros = (
+                nuevo_id,
+                usuario.username,
+                usuario.password_hash,
+                usuario.rol,
+                usuario.activo,
+                usuario.persona_id,
+            )
             await cursor.execute(consulta, parametros)
-            nuevo = await cursor.fetchone()
             await conn.commit()
-            return {"mensaje": "Usuario registrado exitosamente", "id": nuevo["id"]}
+            return {"mensaje": "Usuario registrado exitosamente"}
     except Exception as e:
         await conn.rollback()
         print(f"Error insertar usuario: {e}")
