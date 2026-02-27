@@ -22,3 +22,4 @@ async def lifespan(app: FastAPI):
     finally:
         await pool.close()
         print("Pool de conexiones cerrado")
+app = FastAPI(lifespan=lifespan)

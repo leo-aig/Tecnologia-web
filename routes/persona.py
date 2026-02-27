@@ -10,10 +10,10 @@ class Persona(BaseModel):
     nombres: str
     apellidos: str
     ci: str
-    telefono: str | None = None
-    email: EmailStr | None = None
-    direccion: str | None = None
-    activo: bool = True
+    telefono: str
+    email: str
+    direccion: str 
+    activo: bool
 
 
 @router.get("/")
