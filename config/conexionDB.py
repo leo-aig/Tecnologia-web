@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import dict_row
 
-DB_URL = "postgresql://postgres:leo123@localhost:5432/veterinaria"
+DB_URL = "postgresql://postgres:jhoel17@localhost:5433/veterinaria"
 pool = AsyncConnectionPool(conninfo=DB_URL, open=False)
 
 
