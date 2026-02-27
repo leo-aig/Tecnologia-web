@@ -42,6 +42,7 @@ async def listar_mascotas(conn=Depends(get_conexion)):
 
 @router.get("/{id_mascota}")
 async def obtener_mascota(id_mascota: int, conn=Depends(get_conexion)):
+    print(f"Listando mascotas")
     consulta = """
         SELECT id, nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
                alergias, antecedentes, activo, dueno_persona_id
