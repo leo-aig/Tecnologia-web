@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-
+from config.conexionDB import app
+from config.conexionDB import lifespan
 from routes import cita, mascota, persona, usuario
 
-app = FastAPI(title="Veterinaria API")
 
 app.include_router(persona.router, prefix="/personas")
 app.include_router(usuario.router, prefix="/usuarios")
