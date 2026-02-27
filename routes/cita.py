@@ -11,9 +11,9 @@ router = APIRouter()
 class Cita(BaseModel):
     fecha_hora: datetime
     motivo: str
-    prioridad: str = "normal"
-    estado: str = "pendiente"
-    observaciones: str | None = None
+    prioridad: str 
+    estado: str 
+    observaciones: str 
     mascota_id: int
     veterinario_id: int
 
