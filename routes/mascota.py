@@ -11,7 +11,6 @@ router = APIRouter()
 class Mascota(BaseModel):
     nombre: str
     especie: str
-    raza: str 
     edad: int 
     sexo: str 
     peso: Decimal 
@@ -26,7 +25,7 @@ class Mascota(BaseModel):
 @router.get("/")
 async def listar_mascotas(conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
+        SELECT id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
                alergias, antecedentes, activo, dueno_persona_id
         FROM mascota
         ORDER BY id
@@ -44,7 +43,7 @@ async def listar_mascotas(conn=Depends(get_conexion)):
 async def obtener_mascota(id_mascota: int, conn=Depends(get_conexion)):
     print(f"Listando mascotas")
     consulta = """
-        SELECT id, nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
+        SELECT id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
                alergias, antecedentes, activo, dueno_persona_id
         FROM mascota
         WHERE id = %s
@@ -67,10 +66,10 @@ async def obtener_mascota(id_mascota: int, conn=Depends(get_conexion)):
 async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO mascota (
-            id, nombre, especie, raza, edad, sexo, peso, talla, grupo_sanguineo,
+            id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
             alergias, antecedentes, activo, dueno_persona_id
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     try:
         async with conn.cursor() as cursor:
@@ -82,7 +81,6 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
                 nuevo_id,
                 mascota.nombre,
                 mascota.especie,
-                mascota.raza,
                 mascota.edad,
                 mascota.sexo,
                 mascota.peso,
@@ -106,14 +104,13 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
 async def actualizar_mascota(id_mascota: int, mascota: Mascota, conn=Depends(get_conexion)):
     consulta = """
         UPDATE mascota
-        SET nombre = %s, especie = %s, raza = %s, edad = %s, sexo = %s, peso = %s, talla = %s,
+        SET nombre = %s, especie = %s, edad = %s, sexo = %s, peso = %s, talla = %s,
             grupo_sanguineo = %s, alergias = %s, antecedentes = %s, activo = %s, dueno_persona_id = %s
         WHERE id = %s
     """
     parametros = (
         mascota.nombre,
         mascota.especie,
-        mascota.raza,
         mascota.edad,
         mascota.sexo,
         mascota.peso,

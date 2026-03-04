@@ -9,7 +9,6 @@ router = APIRouter()
 class Usuario(BaseModel):
     username: str
     password_hash: str
-    rol: str = "veterinario"
     activo: bool = True
     veterinario_id: int
 
@@ -17,7 +16,7 @@ class Usuario(BaseModel):
 @router.get("/")
 async def listar_usuarios(conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, username, password_hash, rol, activo, veterinario_id
+        SELECT id, username, password_hash, activo, veterinario_id
         FROM usuario
         ORDER BY id
     """
@@ -33,7 +32,7 @@ async def listar_usuarios(conn=Depends(get_conexion)):
 @router.get("/{id_usuario}")
 async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, username, password_hash, rol, activo, veterinario_id
+        SELECT id, username, password_hash, activo, veterinario_id
         FROM usuario
         WHERE id = %s
     """
@@ -54,8 +53,8 @@ async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO usuario (id, username, password_hash, rol, activo, veterinario_id)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO usuario (id, username, password_hash, activo, veterinario_id)
+        VALUES (%s, %s, %s, %s, %s)
     """
     try:
         async with conn.cursor() as cursor:
@@ -67,7 +66,6 @@ async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
                 nuevo_id,
                 usuario.username,
                 usuario.password_hash,
-                usuario.rol,
                 usuario.activo,
                 usuario.veterinario_id,
             )
@@ -84,13 +82,12 @@ async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
 async def actualizar_usuario(id_usuario: int, usuario: Usuario, conn=Depends(get_conexion)):
     consulta = """
         UPDATE usuario
-        SET username = %s, password_hash = %s, rol = %s, activo = %s, veterinario_id = %s
+        SET username = %s, password_hash = %s, activo = %s, veterinario_id = %s
         WHERE id = %s
     """
     parametros = (
         usuario.username,
         usuario.password_hash,
-        usuario.rol,
         usuario.activo,
         usuario.veterinario_id,
         id_usuario,
