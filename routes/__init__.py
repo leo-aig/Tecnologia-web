@@ -1,2 +1,12 @@
-from . import cita, mascota, persona, usuario
+from . import (
+    cita,
+    mascota,
+    persona,
+    usuario,
+    veterinario,
+    historial_clinico,
+    tratamiento,
+    control_tratamiento,
+    reportes,
+)
 

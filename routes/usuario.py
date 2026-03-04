@@ -11,13 +11,13 @@ class Usuario(BaseModel):
     password_hash: str
     rol: str = "veterinario"
     activo: bool = True
-    persona_id: int
+    veterinario_id: int
 
 
 @router.get("/")
 async def listar_usuarios(conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, username, password_hash, rol, activo, persona_id
+        SELECT id, username, password_hash, rol, activo, veterinario_id
         FROM usuario
         ORDER BY id
     """
@@ -33,7 +33,7 @@ async def listar_usuarios(conn=Depends(get_conexion)):
 @router.get("/{id_usuario}")
 async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, username, password_hash, rol, activo, persona_id
+        SELECT id, username, password_hash, rol, activo, veterinario_id
         FROM usuario
         WHERE id = %s
     """
@@ -54,7 +54,7 @@ async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO usuario (id, username, password_hash, rol, activo, persona_id)
+        INSERT INTO usuario (id, username, password_hash, rol, activo, veterinario_id)
         VALUES (%s, %s, %s, %s, %s, %s)
     """
     try:
@@ -69,7 +69,7 @@ async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
                 usuario.password_hash,
                 usuario.rol,
                 usuario.activo,
-                usuario.persona_id,
+                usuario.veterinario_id,
             )
             await cursor.execute(consulta, parametros)
             await conn.commit()
@@ -84,7 +84,7 @@ async def insertar_usuario(usuario: Usuario, conn=Depends(get_conexion)):
 async def actualizar_usuario(id_usuario: int, usuario: Usuario, conn=Depends(get_conexion)):
     consulta = """
         UPDATE usuario
-        SET username = %s, password_hash = %s, rol = %s, activo = %s, persona_id = %s
+        SET username = %s, password_hash = %s, rol = %s, activo = %s, veterinario_id = %s
         WHERE id = %s
     """
     parametros = (
@@ -92,7 +92,7 @@ async def actualizar_usuario(id_usuario: int, usuario: Usuario, conn=Depends(get
         usuario.password_hash,
         usuario.rol,
         usuario.activo,
-        usuario.persona_id,
+        usuario.veterinario_id,
         id_usuario,
     )
     try:
