@@ -11,15 +11,15 @@ router = APIRouter()
 class Mascota(BaseModel):
     nombre: str
     especie: str
-    raza: str | None = None
-    edad: int | None = None
-    sexo: str | None = None
-    peso: Decimal | None = None
-    talla: Decimal | None = None
-    grupo_sanguineo: str | None = None
-    alergias: str | None = None
-    antecedentes: str | None = None
-    activo: bool = True
+    raza: str 
+    edad: int 
+    sexo: str 
+    peso: Decimal 
+    talla: Decimal 
+    grupo_sanguineo: str 
+    alergias: str 
+    antecedentes: str
+    activo: bool 
     dueno_persona_id: int
 
 
