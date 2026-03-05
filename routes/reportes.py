@@ -10,7 +10,6 @@ async def reporte_general(conn=Depends(get_conexion)):
     consulta = """
         SELECT
             v.id AS veterinario_id,
-            p.nombres || ' ' || p.apellidos AS veterinario,
             COUNT(c.id) AS total_citas,
             COUNT(*) FILTER (WHERE c.estado = 'pendiente') AS citas_pendientes,
             COUNT(*) FILTER (WHERE c.estado = 'completada') AS citas_completadas,
@@ -18,10 +17,9 @@ async def reporte_general(conn=Depends(get_conexion)):
             MIN(c.fecha_hora) AS primera_cita,
             MAX(c.fecha_hora) AS ultima_cita
         FROM veterinario v
-        JOIN persona p ON p.id = v.persona_id
         LEFT JOIN cita c ON c.veterinario_id = v.id
-        GROUP BY v.id, p.nombres, p.apellidos
-        ORDER BY veterinario
+        GROUP BY v.id
+        ORDER BY v.id
     """
     try:
         async with conn.cursor() as cursor:
