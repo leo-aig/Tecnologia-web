@@ -59,9 +59,10 @@ async def insertar_veterinario(veterinario: Veterinario, conn=Depends(get_conexi
     try:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT pg_advisory_xact_lock(1005)")
-            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM veterinario")
+            await cursor.execute("SELECT id FROM veterinario ORDER BY id DESC LIMIT 1")
             fila = await cursor.fetchone()
-            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            ultimo_id = (fila["id"] if isinstance(fila, dict) else fila[0]) if fila else 0
+            nuevo_id = ultimo_id + 1
             parametros = (
                 nuevo_id,
                 veterinario.licencia,

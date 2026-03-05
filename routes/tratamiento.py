@@ -63,9 +63,10 @@ async def insertar_tratamiento(tratamiento: Tratamiento, conn=Depends(get_conexi
     try:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT pg_advisory_xact_lock(1007)")
-            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM tratamiento")
+            await cursor.execute("SELECT id FROM tratamiento ORDER BY id DESC LIMIT 1")
             fila = await cursor.fetchone()
-            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            ultimo_id = (fila["id"] if isinstance(fila, dict) else fila[0]) if fila else 0
+            nuevo_id = ultimo_id + 1
             parametros = (
                 nuevo_id,
                 tratamiento.nombre,

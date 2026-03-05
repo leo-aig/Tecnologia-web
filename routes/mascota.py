@@ -74,9 +74,10 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
     try:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT pg_advisory_xact_lock(1003)")
-            await cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 AS nuevo_id FROM mascota")
+            await cursor.execute("SELECT id FROM mascota ORDER BY id DESC LIMIT 1")
             fila = await cursor.fetchone()
-            nuevo_id = fila["nuevo_id"] if isinstance(fila, dict) else fila[0]
+            ultimo_id = (fila["id"] if isinstance(fila, dict) else fila[0]) if fila else 0
+            nuevo_id = ultimo_id + 1
             parametros = (
                 nuevo_id,
                 mascota.nombre,
