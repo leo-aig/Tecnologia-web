@@ -10,13 +10,12 @@ class Veterinario(BaseModel):
     licencia: str
     especialidad: str 
     activo: bool
-    persona_id: int
 
 
 @router.get("/")
 async def listar_veterinarios(conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, licencia, especialidad, activo, persona_id
+        SELECT id, licencia, especialidad, activo
         FROM veterinario
         ORDER BY id
     """
@@ -32,7 +31,7 @@ async def listar_veterinarios(conn=Depends(get_conexion)):
 @router.get("/{id_veterinario}")
 async def obtener_veterinario(id_veterinario: int, conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, licencia, especialidad, activo, persona_id
+        SELECT id, licencia, especialidad, activo
         FROM veterinario
         WHERE id = %s
     """
@@ -53,8 +52,8 @@ async def obtener_veterinario(id_veterinario: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_veterinario(veterinario: Veterinario, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO veterinario (id, licencia, especialidad, activo, persona_id)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO veterinario (id, licencia, especialidad, activo)
+        VALUES (%s, %s, %s, %s)
     """
     try:
         async with conn.cursor() as cursor:
@@ -68,7 +67,6 @@ async def insertar_veterinario(veterinario: Veterinario, conn=Depends(get_conexi
                 veterinario.licencia,
                 veterinario.especialidad,
                 veterinario.activo,
-                veterinario.persona_id,
             )
             await cursor.execute(consulta, parametros)
             await conn.commit()
@@ -83,14 +81,13 @@ async def insertar_veterinario(veterinario: Veterinario, conn=Depends(get_conexi
 async def actualizar_veterinario(id_veterinario: int, veterinario: Veterinario, conn=Depends(get_conexion)):
     consulta = """
         UPDATE veterinario
-        SET licencia = %s, especialidad = %s, activo = %s, persona_id = %s
+        SET licencia = %s, especialidad = %s, activo = %s
         WHERE id = %s
     """
     parametros = (
         veterinario.licencia,
         veterinario.especialidad,
         veterinario.activo,
-        veterinario.persona_id,
         id_veterinario,
     )
     try:
