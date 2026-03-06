@@ -103,6 +103,7 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
 
 @router.put("/{id_mascota}")
 async def actualizar_mascota(id_mascota: int, mascota: Mascota, conn=Depends(get_conexion)):
+    print(f"Actualizando mascota")
     consulta = """
         UPDATE mascota
         SET nombre = %s, especie = %s, edad = %s, sexo = %s, peso = %s, talla = %s,
