@@ -13,6 +13,11 @@ class Usuario(BaseModel):
     veterinario_id: int
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 @router.get("/")
 async def listar_usuarios(conn=Depends(get_conexion)):
     consulta = """
@@ -48,6 +53,39 @@ async def obtener_usuario(id_usuario: int, conn=Depends(get_conexion)):
     except Exception as e:
         print(f"Error obtener usuario: {e}")
         raise HTTPException(status_code=400, detail="Error al obtener usuario")
+
+
+@router.post("/login")
+async def login_usuario(data: LoginRequest, conn=Depends(get_conexion)):
+    consulta = """
+        SELECT id, username, password_hash, activo, veterinario_id
+        FROM usuario
+        WHERE username = %s
+        LIMIT 1
+    """
+    try:
+        async with conn.cursor() as cursor:
+            await cursor.execute(consulta, (data.username,))
+            usuario = await cursor.fetchone()
+            if not usuario:
+                raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+            if not usuario["activo"]:
+                raise HTTPException(status_code=403, detail="Usuario inactivo")
+            if usuario["password_hash"] != data.password:
+                raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+            return {
+                "mensaje": "Login exitoso",
+                "usuario": {
+                    "id": usuario["id"],
+                    "username": usuario["username"],
+                    "veterinario_id": usuario["veterinario_id"],
+                },
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error login usuario: {e}")
+        raise HTTPException(status_code=400, detail="Error en login")
 
 
 @router.post("/")
