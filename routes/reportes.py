@@ -7,7 +7,7 @@ router = APIRouter()
 
 @router.get("/general")
 async def reporte_general(conn=Depends(get_conexion)):
-    consulta = """
+    consulta = """ 
         SELECT
             v.id AS veterinario_id,
             COUNT(c.id) AS total_citas,

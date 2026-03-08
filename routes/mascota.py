@@ -11,22 +11,22 @@ router = APIRouter()
 class Mascota(BaseModel):
     nombre: str
     especie: str
-    edad: int 
-    sexo: str 
-    peso: Decimal 
-    talla: Decimal 
-    grupo_sanguineo: str 
-    alergias: str 
+    edad: int
+    sexo: str
+    peso: Decimal
+    talla: Decimal
+    grupo_sanguineo: str
+    alergias: str
     antecedentes: str
-    activo: bool 
-    dueno_persona_id: int
+    activo: bool
+    dueno_id: int
 
 
 @router.get("/")
 async def listar_mascotas(conn=Depends(get_conexion)):
     consulta = """
         SELECT id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
-               alergias, antecedentes, activo, dueno_persona_id
+               alergias, antecedentes, activo, dueno_id
         FROM mascota
         ORDER BY id
     """
@@ -41,10 +41,9 @@ async def listar_mascotas(conn=Depends(get_conexion)):
 
 @router.get("/{id_mascota}")
 async def obtener_mascota(id_mascota: int, conn=Depends(get_conexion)):
-    print(f"Listando mascotas")
     consulta = """
         SELECT id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
-               alergias, antecedentes, activo, dueno_persona_id
+               alergias, antecedentes, activo, dueno_id
         FROM mascota
         WHERE id = %s
     """
@@ -67,7 +66,7 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
     consulta = """
         INSERT INTO mascota (
             id, nombre, especie, edad, sexo, peso, talla, grupo_sanguineo,
-            alergias, antecedentes, activo, dueno_persona_id
+            alergias, antecedentes, activo, dueno_id
         )
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
@@ -90,7 +89,7 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
                 mascota.alergias,
                 mascota.antecedentes,
                 mascota.activo,
-                mascota.dueno_persona_id,
+                mascota.dueno_id,
             )
             await cursor.execute(consulta, parametros)
             await conn.commit()
@@ -103,11 +102,10 @@ async def insertar_mascota(mascota: Mascota, conn=Depends(get_conexion)):
 
 @router.put("/{id_mascota}")
 async def actualizar_mascota(id_mascota: int, mascota: Mascota, conn=Depends(get_conexion)):
-    print(f"Actualizando mascota")
     consulta = """
         UPDATE mascota
         SET nombre = %s, especie = %s, edad = %s, sexo = %s, peso = %s, talla = %s,
-            grupo_sanguineo = %s, alergias = %s, antecedentes = %s, activo = %s, dueno_persona_id = %s
+            grupo_sanguineo = %s, alergias = %s, antecedentes = %s, activo = %s, dueno_id = %s
         WHERE id = %s
     """
     parametros = (
@@ -121,7 +119,7 @@ async def actualizar_mascota(id_mascota: int, mascota: Mascota, conn=Depends(get
         mascota.alergias,
         mascota.antecedentes,
         mascota.activo,
-        mascota.dueno_persona_id,
+        mascota.dueno_id,
         id_mascota,
     )
     try:

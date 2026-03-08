@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from config.conexionDB import app
-from routes import cita, mascota, persona, usuario, veterinario, control_tratamiento, tratamiento, historial_clinico, reportes
+from routes import cita, mascota, persona, usuario, veterinario, control_tratamiento, tratamiento, historial_clinico, reportes, dueno
 
 
 app.include_router(persona.router, prefix="/personas")
@@ -12,6 +12,7 @@ app.include_router(historial_clinico.router, prefix="/historial")
 app.include_router(control_tratamiento.router, prefix="/control")
 app.include_router(tratamiento.router, prefix="/tratamientos")
 app.include_router(reportes.router, prefix="/reportes")
+app.include_router(dueno.router, prefix="/duenos")
 
 
 @app.get("/")
