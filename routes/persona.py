@@ -19,7 +19,7 @@ class Persona(BaseModel):
 @router.get("/")
 async def listar_personas(conn=Depends(get_conexion)):
     consulta = """
-        SELECT  nombres, apellidos, ci, telefono, email, direccion, activo
+        SELECT id, nombres, apellidos, ci, telefono, email, direccion, activo
         FROM persona
         ORDER BY id
     """

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Veterinaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <aside class="sidebar">
+        <div class="brand">Sistema Veterinaria</div>
+        <div id="usuarioActivo" class="chip">Usuario: -</div>
+
+        <div class="menu-title">Modulos</div>
+        <button class="menu-item menu-link active" data-view="dashboard" type="button">Dashboard</button>
+        <button class="menu-item menu-link" data-view="personas" type="button">Personas</button>
+        <button class="menu-item menu-link" data-view="duenos" type="button">Duenos</button>
+        <button class="menu-item menu-link" data-view="mascotas" type="button">Mascotas</button>
+        <button class="menu-item menu-link" data-view="veterinarios" type="button">Veterinarios</button>
+        <button class="menu-item menu-link" data-view="usuarios" type="button">Usuarios</button>
+        <button class="menu-item menu-link" data-view="citas" type="button">Citas</button>
+        <button class="menu-item menu-link" data-view="historial" type="button">Historial Clinico</button>
+        <button class="menu-item menu-link" data-view="tratamientos" type="button">Tratamientos</button>
+        <button class="menu-item menu-link" data-view="control" type="button">Control Tratamiento</button>
+        <button id="logoutBtn" class="btn logout">Cerrar sesion</button>
+      </aside>
+
+      <section class="content">
+        <div class="topbar">
+          <div>
+            <strong>Dashboard Veterinaria</strong>
+            <div class="status">Resumen de modulos y registros</div>
+          </div>
+          <div class="status ok">API: localhost:8000</div>
+        </div>
+
+        <section id="dashboardCards" class="cards">
+          <article class="card">
+            <h3>Personas</h3>
+            <div id="cntPersonas" class="count">0</div>
+            <div class="status">Clientes y personas base</div>
+          </article>
+
+          <article class="card">
+            <h3>Duenos</h3>
+            <div id="cntDuenos" class="count">0</div>
+            <div class="status">Duenos registrados</div>
+          </article>
+
+          <article class="card">
+            <h3>Mascotas</h3>
+            <div id="cntMascotas" class="count">0</div>
+            <div class="status">Pacientes atendidos</div>
+          </article>
+
+          <article class="card">
+            <h3>Veterinarios</h3>
+            <div id="cntVeterinarios" class="count">0</div>
+            <div class="status">Personal veterinario</div>
+          </article>
+
+          <article class="card">
+            <h3>Citas</h3>
+            <div id="cntCitas" class="count">0</div>
+            <div class="status">Agenda general</div>
+          </article>
+
+          <article class="card">
+            <h3>Usuarios</h3>
+            <div id="cntUsuarios" class="count">0</div>
+            <div class="status">Accesos al sistema</div>
+          </article>
+        </section>
+
+        <section id="crudModules" class="crud-grid hidden"></section>
+      </section>
+    </main>
+
+    <script src="./modules/_registry.js"></script>
+    <script src="./modules/personas.js"></script>
+    <script src="./modules/duenos.js"></script>
+    <script src="./modules/mascotas.js"></script>
+    <script src="./modules/veterinarios.js"></script>
+    <script src="./modules/usuarios.js"></script>
+    <script src="./modules/citas.js"></script>
+    <script src="./modules/historial.js"></script>
+    <script src="./modules/tratamientos.js"></script>
+    <script src="./modules/control.js"></script>
+    <script src="./dashboard.js"></script>
+  </body>
+</html>

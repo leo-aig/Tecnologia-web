@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Veterinaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="auth-wrap">
+      <section class="auth-card">
+        <h1 class="auth-title">Veterinaria - Iniciar Sesion</h1>
+        <p class="auth-sub">Primero inicia sesion para entrar al dashboard.</p>
+
+        <div class="field">
+          <label for="usuario">Usuario</label>
+          <input id="usuario" type="text" placeholder="admin" />
+        </div>
+
+        <div class="field">
+          <label for="password">Contrasena</label>
+          <input id="password" type="password" placeholder="admin123" />
+        </div>
+
+        <button id="btnLogin" class="btn">Entrar</button>
+        <div id="msg" class="error"></div>
+      </section>
+    </main>
+
+    <script src="./login.js"></script>
+  </body>
+</html>
