@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from config.conexionDB import app
 from routes import cita, mascota, persona, usuario, veterinario, control_tratamiento, tratamiento, historial_clinico, reportes, dueno
 
@@ -17,7 +16,3 @@ app.include_router(tratamiento.router, prefix="/tratamientos")
 app.include_router(reportes.router, prefix="/reportes")
 app.include_router(dueno.router, prefix="/duenos")
 
-
-@app.get("/")
-async def root():
-    return {"mensaje": "API Veterinaria en funcionamiento", "front": "http://localhost:8000/front/login.html"}
