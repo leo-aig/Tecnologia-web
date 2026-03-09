@@ -9,14 +9,13 @@ router = APIRouter()
 class Dueno(BaseModel):
     persona_id: int
     direccion: str | None = None
-    nit: str | None = None
     activo: bool = True
 
 
 @router.get("/")
 async def listar_duenos(conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, persona_id, direccion, nit, activo
+        SELECT id, persona_id, direccion, activo
         FROM dueno
         ORDER BY id
     """
@@ -32,7 +31,7 @@ async def listar_duenos(conn=Depends(get_conexion)):
 @router.get("/{id_dueno}")
 async def obtener_dueno(id_dueno: int, conn=Depends(get_conexion)):
     consulta = """
-        SELECT id, persona_id, direccion, nit, activo
+        SELECT id, persona_id, direccion, activo
         FROM dueno
         WHERE id = %s
     """
@@ -53,8 +52,8 @@ async def obtener_dueno(id_dueno: int, conn=Depends(get_conexion)):
 @router.post("/")
 async def insertar_dueno(dueno: Dueno, conn=Depends(get_conexion)):
     consulta = """
-        INSERT INTO dueno (id, persona_id, direccion, nit, activo)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO dueno (id, persona_id, direccion, activo)
+        VALUES (%s, %s, %s, %s)
     """
     try:
         async with conn.cursor() as cursor:
@@ -67,7 +66,6 @@ async def insertar_dueno(dueno: Dueno, conn=Depends(get_conexion)):
                 nuevo_id,
                 dueno.persona_id,
                 dueno.direccion,
-                dueno.nit,
                 dueno.activo,
             )
             await cursor.execute(consulta, parametros)
@@ -83,13 +81,12 @@ async def insertar_dueno(dueno: Dueno, conn=Depends(get_conexion)):
 async def actualizar_dueno(id_dueno: int, dueno: Dueno, conn=Depends(get_conexion)):
     consulta = """
         UPDATE dueno
-        SET persona_id = %s, direccion = %s, nit = %s, activo = %s
+        SET persona_id = %s, direccion = %s, activo = %s
         WHERE id = %s
     """
     parametros = (
         dueno.persona_id,
         dueno.direccion,
-        dueno.nit,
         dueno.activo,
         id_dueno,
     )

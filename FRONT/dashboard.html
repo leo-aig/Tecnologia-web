@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Veterinaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="panel-layout">
+      <aside class="panel-sidebar">
+        <h2 class="brand-title">Veterinaria</h2>
+        <p id="usuario" class="user-pill">Usuario: -</p>
+
+        <div class="menu-block">
+          <p class="menu-title">Modulos</p>
+          <button class="menu-btn active" data-view="dashboard" type="button">Dashboard</button>
+          <button class="menu-btn" data-view="personas" type="button">Personas</button>
+          <button class="menu-btn" data-view="duenos" type="button">Dueños</button>
+          <button class="menu-btn" data-view="mascotas" type="button">Mascotas</button>
+          <button class="menu-btn" data-view="veterinarios" type="button">Veterinarios</button>
+          <button class="menu-btn" data-view="citas" type="button">Citas</button>
+          <button class="menu-btn" data-view="historial" type="button">Historial</button>
+          <button class="menu-btn" data-view="tratamientos" type="button">Tratamientos</button>
+          <button class="menu-btn" data-view="control" type="button">Control Tratamiento</button>
+          <button class="menu-btn" data-view="usuarios" type="button">Usuarios</button>
+          <button class="menu-btn" data-view="reportes" type="button">Reportes</button>
+        </div>
+
+        <button id="btnSalir" class="logout-btn" type="button">Cerrar sesion</button>
+      </aside>
+
+      <section class="panel-content">
+        <section id="viewDashboard">
+        <header class="panel-top">
+          <h1>Panel Principal</h1>
+          <p>Resumen general del sistema veterinario</p>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <h3>Personas</h3>
+            <p id="cntPersonas" class="stat-number">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Dueños</h3>
+            <p id="cntDuenos" class="stat-number">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Mascotas</h3>
+            <p id="cntMascotas" class="stat-number">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Veterinarios</h3>
+            <p id="cntVeterinarios" class="stat-number">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Citas</h3>
+            <p id="cntCitas" class="stat-number">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Usuarios</h3>
+            <p id="cntUsuarios" class="stat-number">0</p>
+          </article>
+        </section>
+        </section>
+
+        <section id="viewPersonas" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Personas</h1>
+            <p>Registrar, editar, consultar y eliminar personas</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitlePersona">Registrar Persona</h3>
+              <form id="formPersona">
+                <label for="nombresPersona">Nombres</label>
+                <input id="nombresPersona" type="text" required />
+
+                <label for="apellidosPersona">Apellidos</label>
+                <input id="apellidosPersona" type="text" required />
+
+                <label for="ciPersona">CI</label>
+                <input id="ciPersona" type="text" required />
+
+                <label for="telefonoPersona">Teléfono</label>
+                <input id="telefonoPersona" type="text" />
+
+                <label for="emailPersona">Email</label>
+                <input id="emailPersona" type="email" />
+
+                <label for="direccionPersona">Dirección</label>
+                <input id="direccionPersona" type="text" />
+
+                <label class="check-inline">
+                  <input id="activoPersona" type="checkbox" checked />
+                  Activo
+                </label>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarPersona" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgPersona" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Personas</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Nombres</th>
+                      <th>Apellidos</th>
+                      <th>CI</th>
+                      <th>Teléfono</th>
+                      <th>Email</th>
+                      <th>Dirección</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaPersonas"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewDuenos" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Dueños</h1>
+            <p>Registrar, editar, consultar y eliminar dueños</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitle">Registrar Dueño</h3>
+              <form id="formDueno">
+                <label for="personaId">Persona</label>
+                <select id="personaId" required></select>
+
+                <label for="direccion">Dirección</label>
+                <input id="direccion" type="text" placeholder="Ejemplo: Zona Norte" />
+
+                <label class="check-inline">
+                  <input id="activo" type="checkbox" checked />
+                  Activo
+                </label>
+
+                <div class="form-actions">
+                  <button id="btnGuardarDueno" type="submit">Guardar</button>
+                  <button id="btnCancelarEdicion" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgDueno" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Dueños</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Persona</th>
+                      <th>Dirección</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaDuenos"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewMascotas" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Mascotas</h1>
+            <p>Registrar, editar, consultar y eliminar mascotas</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleMascota">Registrar Mascota</h3>
+              <form id="formMascota">
+                <label for="nombreMascota">Nombre</label>
+                <input id="nombreMascota" type="text" required />
+
+                <label for="especieMascota">Especie</label>
+                <input id="especieMascota" type="text" required />
+
+                <label for="edadMascota">Edad</label>
+                <input id="edadMascota" type="number" min="0" required />
+
+                <label for="sexoMascota">Sexo</label>
+                <input id="sexoMascota" type="text" placeholder="M o H" required />
+
+                <label for="pesoMascota">Peso</label>
+                <input id="pesoMascota" type="number" step="0.01" min="0" required />
+
+                <label for="tallaMascota">Talla</label>
+                <input id="tallaMascota" type="number" step="0.01" min="0" required />
+
+                <label for="grupoMascota">Grupo sanguíneo</label>
+                <input id="grupoMascota" type="text" required />
+
+                <label for="alergiasMascota">Alergias</label>
+                <input id="alergiasMascota" type="text" required />
+
+                <label for="antecedentesMascota">Antecedentes</label>
+                <input id="antecedentesMascota" type="text" required />
+
+                <label for="duenoMascota">Dueño</label>
+                <select id="duenoMascota" required></select>
+
+                <label class="check-inline">
+                  <input id="activoMascota" type="checkbox" checked />
+                  Activo
+                </label>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarMascota" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgMascota" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Mascotas</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Especie</th>
+                      <th>Edad</th>
+                      <th>Sexo</th>
+                      <th>Peso</th>
+                      <th>Talla</th>
+                      <th>Grupo</th>
+                      <th>Dueño</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaMascotas"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewVeterinarios" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Veterinarios</h1>
+            <p>Registrar, editar, consultar y eliminar veterinarios</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleVeterinario">Registrar Veterinario</h3>
+              <form id="formVeterinario">
+                <label for="personaVeterinario">Persona</label>
+                <select id="personaVeterinario" required></select>
+
+                <label for="licenciaVeterinario">Licencia</label>
+                <input id="licenciaVeterinario" type="text" required />
+
+                <label for="especialidadVeterinario">Especialidad</label>
+                <input id="especialidadVeterinario" type="text" required />
+
+                <label class="check-inline">
+                  <input id="activoVeterinario" type="checkbox" checked />
+                  Activo
+                </label>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarVeterinario" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgVeterinario" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Veterinarios</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Persona</th>
+                      <th>Licencia</th>
+                      <th>Especialidad</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaVeterinarios"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewCitas" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Citas</h1>
+            <p>Registrar, editar, consultar y eliminar citas</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleCita">Registrar Cita</h3>
+              <form id="formCita">
+                <label for="fechaHoraCita">Fecha y hora</label>
+                <input id="fechaHoraCita" type="datetime-local" required />
+
+                <label for="motivoCita">Motivo</label>
+                <input id="motivoCita" type="text" required />
+
+                <label for="prioridadCita">Prioridad</label>
+                <select id="prioridadCita" required>
+                  <option value="normal">Normal</option>
+                  <option value="urgente">Urgente</option>
+                </select>
+
+                <label for="estadoCita">Estado</label>
+                <select id="estadoCita" required>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="confirmada">Confirmada</option>
+                  <option value="en_atencion">En atención</option>
+                  <option value="completada">Completada</option>
+                  <option value="cancelada">Cancelada</option>
+                  <option value="no_asistio">No asistió</option>
+                </select>
+
+                <label for="observacionesCita">Observaciones</label>
+                <input id="observacionesCita" type="text" />
+
+                <label for="mascotaCita">Mascota</label>
+                <select id="mascotaCita" required></select>
+
+                <label for="veterinarioCita">Veterinario</label>
+                <select id="veterinarioCita" required></select>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarCita" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgCita" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Citas</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha y hora</th>
+                      <th>Mascota</th>
+                      <th>Veterinario</th>
+                      <th>Motivo</th>
+                      <th>Prioridad</th>
+                      <th>Estado</th>
+                      <th>Observaciones</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaCitas"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewHistorial" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Historial Clínico</h1>
+            <p>Registrar, editar, consultar y eliminar historial clínico</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleHistorial">Registrar Historial</h3>
+              <form id="formHistorial">
+                <label for="fechaHistorial">Fecha</label>
+                <input id="fechaHistorial" type="date" required />
+
+                <label for="mascotaHistorial">Mascota</label>
+                <select id="mascotaHistorial" required></select>
+
+                <label for="veterinarioHistorial">Veterinario</label>
+                <select id="veterinarioHistorial" required></select>
+
+                <label for="citaHistorial">Cita (opcional)</label>
+                <select id="citaHistorial"></select>
+
+                <label for="sintomasHistorial">Síntomas</label>
+                <input id="sintomasHistorial" type="text" />
+
+                <label for="diagnosticoHistorial">Diagnóstico</label>
+                <input id="diagnosticoHistorial" type="text" />
+
+                <label for="observacionesHistorial">Observaciones</label>
+                <input id="observacionesHistorial" type="text" />
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarHistorial" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgHistorial" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Historiales</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Mascota</th>
+                      <th>Veterinario</th>
+                      <th>Cita</th>
+                      <th>Síntomas</th>
+                      <th>Diagnóstico</th>
+                      <th>Observaciones</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaHistorial"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewTratamientos" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Tratamientos</h1>
+            <p>Registrar, editar, consultar y eliminar tratamientos</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleTratamiento">Registrar Tratamiento</h3>
+              <form id="formTratamiento">
+                <label for="nombreTratamiento">Nombre</label>
+                <input id="nombreTratamiento" type="text" required />
+
+                <label for="estadoTratamiento">Estado</label>
+                <select id="estadoTratamiento" required>
+                  <option value="activo">Activo</option>
+                  <option value="finalizado">Finalizado</option>
+                  <option value="suspendido">Suspendido</option>
+                </select>
+
+                <label for="fechaInicioTratamiento">Fecha inicio</label>
+                <input id="fechaInicioTratamiento" type="date" required />
+
+                <label for="fechaFinTratamiento">Fecha fin (opcional)</label>
+                <input id="fechaFinTratamiento" type="date" />
+
+                <label for="objetivoTratamiento">Objetivo</label>
+                <input id="objetivoTratamiento" type="text" />
+
+                <label for="historialTratamiento">Historial clínico</label>
+                <select id="historialTratamiento" required></select>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarTratamiento" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgTratamiento" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Tratamientos</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Estado</th>
+                      <th>Inicio</th>
+                      <th>Fin</th>
+                      <th>Objetivo</th>
+                      <th>Paciente</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaTratamientos"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewUsuarios" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Usuarios</h1>
+            <p>Registrar, editar, consultar y eliminar usuarios</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleUsuario">Registrar Usuario</h3>
+              <form id="formUsuario">
+                <label for="usernameUsuario">Usuario</label>
+                <input id="usernameUsuario" type="text" required />
+
+                <label for="passwordUsuario">Contraseña</label>
+                <input id="passwordUsuario" type="text" required />
+
+                <label for="veterinarioUsuario">Veterinario</label>
+                <select id="veterinarioUsuario" required></select>
+
+                <label class="check-inline">
+                  <input id="activoUsuario" type="checkbox" checked />
+                  Activo
+                </label>
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarUsuario" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgUsuario" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Usuarios</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Veterinario</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaUsuarios"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewControl" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Control de Tratamiento</h1>
+            <p>Registrar, editar, consultar y eliminar controles</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3 id="formTitleControl">Registrar Control</h3>
+              <form id="formControl">
+                <label for="fechaControl">Fecha control</label>
+                <input id="fechaControl" type="date" required />
+
+                <label for="estadoControl">Estado</label>
+                <select id="estadoControl" required>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="realizado">Realizado</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+
+                <label for="tratamientoControl">Tratamiento</label>
+                <select id="tratamientoControl" required></select>
+
+                <label for="observacionesControl">Observaciones</label>
+                <input id="observacionesControl" type="text" />
+
+                <div class="form-actions">
+                  <button type="submit">Guardar</button>
+                  <button id="btnCancelarControl" type="button" class="secondary hidden">Cancelar edición</button>
+                </div>
+                <p id="msgControl" class="mensaje"></p>
+              </form>
+            </article>
+
+            <article class="table-card">
+              <h3>Lista de Controles</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Estado</th>
+                      <th>Tratamiento</th>
+                      <th>Paciente</th>
+                      <th>Dueño</th>
+                      <th>Observaciones</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaControl"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section id="viewReportes" class="hidden">
+          <header class="panel-top">
+            <h1>Módulo Reportes</h1>
+            <p>Reporte individual por mascota y reporte general de la clínica</p>
+          </header>
+
+          <section class="duenos-grid">
+            <article class="form-card">
+              <h3>Reporte Individual</h3>
+              <label for="mascotaReporte">Mascota</label>
+              <select id="mascotaReporte"></select>
+              <div class="form-actions">
+                <button id="btnReporteIndividual" type="button">Ver reporte individual</button>
+              </div>
+              <div id="salidaReporteIndividual" class="json-box">Sin datos</div>
+            </article>
+
+            <article class="form-card">
+              <h3>Reporte General</h3>
+              <div class="form-actions">
+                <button id="btnReporteGeneral" type="button">Ver reporte general</button>
+              </div>
+              <div id="salidaReporteGeneral" class="json-box">Sin datos</div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./dashboard.js"></script>
+  </body>
+</html>
